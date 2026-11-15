@@ -414,6 +414,9 @@ public:
 
   const AMDGPU::HardwareLimits &getLimits() const { return Limits; }
 
+  bool
+  headerReadsVgprLoadedOutsideBeforeVMEM(MachineLoop *ML,
+                                         const WaitcntBrackets &Brackets) const;
   PreheaderFlushFlags getPreheaderFlushFlags(MachineLoop *ML,
                                              const WaitcntBrackets &Brackets);
   PreheaderFlushFlags isPreheaderToFlush(MachineBasicBlock &MBB,
@@ -3245,6 +3248,37 @@ bool SIInsertWaitcnts::mayStoreIncrementingDSCNT(const MachineInstr &MI) const {
   return MI.mayStore() && SIInstrInfo::isDS(MI);
 }
 
+// Whether the header of \p ML reads a vgpr with a vmem load pending from
+// outside the loop before it issues any vmem instruction of its own, in a loop
+// that issues vmem instructions counted by LOAD_CNT. Without those, nothing is
+// pending on the back edge and the merged wait is no stricter than needed.
+bool SIInsertWaitcnts::headerReadsVgprLoadedOutsideBeforeVMEM(
+    MachineLoop *ML, const WaitcntBrackets &Brackets) const {
+  // With out-of-order vgpr writes every wait for a load is a full drain, so the
+  // merged state cannot make it stricter.
+  if (!ST.hasVmemWriteVgprInOrder())
+    return false;
+  bool LoopUsesLoadCnt = any_of(ML->blocks(), [&](MachineBasicBlock *MBB) {
+    return any_of(*MBB, [&](const MachineInstr &MI) {
+      return isVMEMOrFlatVMEM(MI) && (MI.mayLoad() || !ST.hasVscnt());
+    });
+  });
+  if (!LoopUsesLoadCnt)
+    return false;
+  for (const MachineInstr &MI : *ML->getHeader()) {
+    if (isVMEMOrFlatVMEM(MI))
+      return false;
+    for (const MachineOperand &Op : MI.all_uses()) {
+      if (Op.isDebug() || !TRI.isVectorRegister(MRI, Op.getReg()))
+        continue;
+      for (MCRegUnit RU : TRI.regunits(Op.getReg().asMCReg()))
+        if (Brackets.hasPendingVMEM(toVMEMID(RU), AMDGPU::LOAD_CNT))
+          return true;
+    }
+  }
+  return false;
+}
+
 // Return flags indicating which counters should be flushed in the preheader of
 // the given loop. We currently decide to flush in the following situations:
 // For VMEM (FlushVmCnt):
@@ -3254,16 +3288,24 @@ bool SIInsertWaitcnts::mayStoreIncrementingDSCNT(const MachineInstr &MI) const {
 // 2. The loop contains vmem load(s), but the loaded values are not used in the
 //    loop, and at least one use of a vgpr containing a value that is loaded
 //    outside of the loop.
+// 3. The loop issues vmem instructions counted by vmcnt, and its header reads a
+//    vgpr containing a value that is loaded outside of the loop before the
+//    header issues any vmem instruction. The first iteration waits for that
+//    load at that point anyway, so the flush costs little there. Without it,
+//    the loads still pending at the end of the preheader stay in the state
+//    merged at the header, and every later iteration's wait at that read is as
+//    strict as the first one's. On targets without vscnt that wait then also
+//    covers the previous iteration's stores.
 // For DS (FlushDsCnt, GFX12+ only):
-// 3. The loop contains no DS reads, and at least one use of a vgpr containing
+// 4. The loop contains no DS reads, and at least one use of a vgpr containing
 //    a value that is DS read outside of the loop.
-// 4. The loop contains DS read(s), loaded values are not used in the same
+// 5. The loop contains DS read(s), loaded values are not used in the same
 //    iteration but in the next iteration (prefetch pattern), and at least one
 //    use of a vgpr containing a value that is DS read outside of the loop.
 //    Flushing in preheader reduces wait overhead if the wait requirement in
 //    iteration 1 would otherwise be more strict (but unfortunately preheader
 //    flush decision is taken before knowing that).
-// 5. (Single-block loops only) The loop has DS prefetch reads with flush point
+// 6. (Single-block loops only) The loop has DS prefetch reads with flush point
 //    tracking. Some DS reads may be used in the same iteration (creating
 //    "flush points"), but others remain unflushed at the backedge. When a DS
 //    read is consumed in the same iteration, it and all prior reads are
@@ -3273,6 +3315,8 @@ PreheaderFlushFlags
 SIInsertWaitcnts::getPreheaderFlushFlags(MachineLoop *ML,
                                          const WaitcntBrackets &Brackets) {
   PreheaderFlushFlags Flags;
+  // Case 3 holds regardless of what the rest of the loop does.
+  Flags.FlushVmCnt = headerReadsVgprLoadedOutsideBeforeVMEM(ML, Brackets);
   bool HasVMemLoad = false;
   bool HasVMemStore = false;
   bool UsesVgprVMEMLoadedOutside = false;
