@@ -493,6 +493,8 @@ define amdgpu_ps void @store_1d_agpr(<8 x i32> inreg %rsrc, i32 %s) {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[0:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    image_store a[0:3], v0, s[0:7] dmask:0xf unorm
 ; GCN-NEXT:    s_endpgm
   %vdata = call <4 x float> asm "; def $0", "=a"()
@@ -506,6 +508,8 @@ define amdgpu_ps void @store_2d_agpr(<8 x i32> inreg %rsrc, i32 %s, i32 %t) {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[0:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    image_store a[0:3], v[0:1], s[0:7] dmask:0xf unorm
 ; GCN-NEXT:    s_endpgm
   %vdata = call <4 x float> asm "; def $0", "=a"()
@@ -519,6 +523,8 @@ define amdgpu_ps void @store_3d_agpr(<8 x i32> inreg %rsrc, i32 %s, i32 %t, i32 
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[0:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    image_store a[0:3], v[0:2], s[0:7] dmask:0xf unorm
 ; GCN-NEXT:    s_endpgm
   %vdata = call <4 x float> asm "; def $0", "=a"()
@@ -532,6 +538,8 @@ define amdgpu_ps void @store_cube_agpr(<8 x i32> inreg %rsrc, i32 %s, i32 %t, i3
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[0:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    image_store a[0:3], v[0:2], s[0:7] dmask:0xf unorm da
 ; GCN-NEXT:    s_endpgm
   %vdata = call <4 x float> asm "; def $0", "=a"()

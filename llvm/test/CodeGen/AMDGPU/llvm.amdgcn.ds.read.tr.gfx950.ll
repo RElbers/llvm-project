@@ -248,6 +248,7 @@ define void @ds_read_b96_tr_b6_no_align2_requirement_agpr(ptr addrspace(3) %ptr)
 ; GFX950-NEXT:    v_accvgpr_write_b32 a1, v0
 ; GFX950-NEXT:    v_accvgpr_write_b32 a2, v1
 ; GFX950-NEXT:    v_accvgpr_write_b32 a3, v2
+; GFX950-NEXT:    s_nop 1
 ; GFX950-NEXT:    ;;#ASMSTART
 ; GFX950-NEXT:    ; use a1 a2 a3
 ; GFX950-NEXT:    ;;#ASMEND

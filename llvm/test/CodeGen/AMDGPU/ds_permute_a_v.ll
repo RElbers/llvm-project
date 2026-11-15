@@ -14,11 +14,14 @@ define void @ds_bpermute_b32_a_a__use_a(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a1
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v0, a0
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a1
 ; CHECK-NEXT:    ds_bpermute_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -40,10 +43,13 @@ define void @ds_bpermute_b32_v_a__use_a(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_bpermute_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -65,10 +71,13 @@ define void @ds_bpermute_b32_a_v__use_a(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def v0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_bpermute_b32 v0, v1, v0
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -90,6 +99,8 @@ define void @ds_bpermute_b32_a_a__use_v(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a1
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v0, a0
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a1
 ; CHECK-NEXT:    ds_bpermute_b32 v0, v0, v1
@@ -118,6 +129,7 @@ define void @ds_bpermute_b32_v_v__use_a(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ds_bpermute_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -227,11 +239,14 @@ define void @ds_permute_b32_a_a__use_a(ptr addrspace(3) %lds) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a1
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v0, a0
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a1
 ; CHECK-NEXT:    ds_permute_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
