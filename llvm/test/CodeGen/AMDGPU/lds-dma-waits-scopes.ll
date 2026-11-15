@@ -70,3 +70,60 @@ define amdgpu_kernel void @unscoped_dma_then_scoped_dma(ptr addrspace(8) %rsrc, 
   store i32 %val, ptr addrspace(1) %out
   ret void
 }
+
+; Two DMAs into the same variable at disjoint offsets. All DMAs with the same
+; scope are tracked in one slot, which holds the score of the latest of them,
+; so a read overlapping only the second one must still wait for it.
+define amdgpu_kernel void @read_from_later_dma_same_scope(ptr addrspace(8) %rsrc, ptr addrspace(1) %out) {
+; CHECK-LABEL: {{^}}read_from_later_dma_same_scope:
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK-NOT:   ds_read
+; CHECK:       s_waitcnt vmcnt(0)
+; CHECK-NEXT:  ds_read_b32
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) @lds.0, i32 4, i32 0, i32 0, i32 0, i32 0)
+  %dst = getelementptr i8, ptr addrspace(3) @lds.0, i32 256
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) %dst, i32 4, i32 256, i32 0, i32 0, i32 0)
+  call void @llvm.amdgcn.wave.barrier()
+  %val = load i32, ptr addrspace(3) %dst
+  store i32 0, ptr addrspace(3) @lds.1
+  store i32 %val, ptr addrspace(1) %out
+  ret void
+}
+
+; Same, with a younger DMA into the other variable that the read need not
+; wait for.
+define amdgpu_kernel void @read_from_later_dma_same_scope_other_pending(ptr addrspace(8) %rsrc, ptr addrspace(1) %out) {
+; CHECK-LABEL: {{^}}read_from_later_dma_same_scope_other_pending:
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK-NOT:   ds_read
+; CHECK:       s_waitcnt vmcnt(1)
+; CHECK-NEXT:  ds_read_b32
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) @lds.0, i32 4, i32 0, i32 0, i32 0, i32 0)
+  %dst = getelementptr i8, ptr addrspace(3) @lds.0, i32 256
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) %dst, i32 4, i32 256, i32 0, i32 0, i32 0)
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) @lds.1, i32 4, i32 512, i32 0, i32 0, i32 0)
+  call void @llvm.amdgcn.wave.barrier()
+  %val = load i32, ptr addrspace(3) %dst
+  store i32 %val, ptr addrspace(1) %out
+  ret void
+}
+
+; The read is disjoint from the only DMA into the variable, but the slot does
+; not record which part of the variable its DMAs wrote, so it waits anyway.
+define amdgpu_kernel void @disjoint_read_same_scope(ptr addrspace(8) %rsrc, ptr addrspace(1) %out) {
+; CHECK-LABEL: {{^}}disjoint_read_same_scope:
+; CHECK:       buffer_load_dword {{.*}} lds
+; CHECK-NOT:   ds_read
+; CHECK:       s_waitcnt vmcnt(0)
+; CHECK-NEXT:  ds_read_b32
+  call void @llvm.amdgcn.raw.ptr.buffer.load.lds(ptr addrspace(8) %rsrc, ptr addrspace(3) @lds.0, i32 4, i32 0, i32 0, i32 0, i32 0)
+  call void @llvm.amdgcn.wave.barrier()
+  %src = getelementptr i8, ptr addrspace(3) @lds.0, i32 512
+  %val = load i32, ptr addrspace(3) %src
+  store i32 0, ptr addrspace(3) @lds.1
+  store i32 %val, ptr addrspace(1) %out
+  ret void
+}

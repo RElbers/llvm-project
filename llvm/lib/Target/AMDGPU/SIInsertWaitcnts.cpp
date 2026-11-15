@@ -34,6 +34,7 @@
 #include "llvm/ADT/PostOrderIterator.h"
 #include "llvm/ADT/Sequence.h"
 #include "llvm/Analysis/AliasAnalysis.h"
+#include "llvm/Analysis/ScopedNoAliasAA.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/MachinePassManager.h"
@@ -146,6 +147,19 @@ static AAMDNodes getLDSStoreScopeInfo(const MachineInstr &MI) {
       return MemOp->getAAInfo().Scope ? MemOp->getAAInfo() : AAMDNodes();
   }
   return AAMDNodes();
+}
+
+// Whether the LDS access \p MemOp may touch what the LDS DMAs tracked in the
+// slot of \p DMA wrote. A slot holds every DMA with the same alias scope info
+// and the score of the latest one, while \p DMA is only the first of them, so
+// its pointer and offset say nothing about the others: compare the alias
+// scopes only. A DMA without a scope may write any LDS variable.
+static bool mayAliasLDSDMAStore(const MachineMemOperand &MemOp,
+                                const MachineInstr &DMA) {
+  AAMDNodes Access = MemOp.getAAInfo();
+  AAMDNodes Store = getLDSStoreScopeInfo(DMA);
+  return ScopedNoAliasAAResult::mayAliasInScopes(Access.Scope, Store.NoAlias) &&
+         ScopedNoAliasAAResult::mayAliasInScopes(Store.Scope, Access.NoAlias);
 }
 
 static bool updateVMCntOnly(const MachineInstr &Inst) {
@@ -352,7 +366,6 @@ class SIInsertWaitcnts {
   DenseMap<MachineBasicBlock *, PreheaderFlushFlags> PreheadersToFlush;
   MachineLoopInfo &MLI;
   MachinePostDominatorTree &PDT;
-  AliasAnalysis *AA = nullptr;
   MachineFunction &MF;
 
   struct BlockInfo {
@@ -392,8 +405,8 @@ public:
   const bool TgSplit;
 
   SIInsertWaitcnts(MachineLoopInfo &MLI, MachinePostDominatorTree &PDT,
-                   AliasAnalysis *AA, MachineFunction &MF)
-      : MLI(MLI), PDT(PDT), AA(AA), MF(MF), ST(MF.getSubtarget<GCNSubtarget>()),
+                   MachineFunction &MF)
+      : MLI(MLI), PDT(PDT), MF(MF), ST(MF.getSubtarget<GCNSubtarget>()),
         TII(*ST.getInstrInfo()), TRI(TII.getRegisterInfo()),
         MRI(MF.getRegInfo()),
         TgSplit(ST.hasTgSplitSupport() &&
@@ -838,7 +851,6 @@ public:
     AU.setPreservesCFG();
     AU.addRequired<MachineLoopInfoWrapperPass>();
     AU.addRequired<MachinePostDominatorTreeWrapperPass>();
-    AU.addUsedIfAvailable<AAResultsWrapperPass>();
     AU.addPreserved<AAResultsWrapperPass>();
     MachineFunctionPass::getAnalysisUsage(AU);
   }
@@ -2441,9 +2453,7 @@ bool SIInsertWaitcnts::generateWaitcntInstBefore(
         if (Ptr && Memop->getAAInfo()) {
           const auto &LDSDMAStores = ScoreBrackets.getLDSDMAStores();
           for (unsigned I = 0, E = LDSDMAStores.size(); I != E; ++I) {
-            // An LDS DMA without a scope may write any LDS variable.
-            if (!getLDSStoreScopeInfo(*LDSDMAStores[I]) ||
-                MI.mayAlias(AA, *LDSDMAStores[I], true)) {
+            if (mayAliasLDSDMAStore(*Memop, *LDSDMAStores[I])) {
               if ((I + 1) >= NUM_LDSDMA) {
                 // We didn't have enough slot to track this LDS DMA store, it
                 // has been tracked using the common RegNo (FIRST_LDS_VGPR).
@@ -3425,11 +3435,7 @@ bool SIInsertWaitcntsLegacy::runOnMachineFunction(MachineFunction &MF) {
   auto &MLI = getAnalysis<MachineLoopInfoWrapperPass>().getLI();
   auto &PDT =
       getAnalysis<MachinePostDominatorTreeWrapperPass>().getPostDomTree();
-  AliasAnalysis *AA = nullptr;
-  if (auto *AAR = getAnalysisIfAvailable<AAResultsWrapperPass>())
-    AA = &AAR->getAAResults();
-
-  return SIInsertWaitcnts(MLI, PDT, AA, MF).run();
+  return SIInsertWaitcnts(MLI, PDT, MF).run();
 }
 
 PreservedAnalyses
@@ -3437,11 +3443,7 @@ SIInsertWaitcntsPass::run(MachineFunction &MF,
                           MachineFunctionAnalysisManager &MFAM) {
   auto &MLI = MFAM.getResult<MachineLoopAnalysis>(MF);
   auto &PDT = MFAM.getResult<MachinePostDominatorTreeAnalysis>(MF);
-  auto *AA = MFAM.getResult<FunctionAnalysisManagerMachineFunctionProxy>(MF)
-                 .getManager()
-                 .getCachedResult<AAManager>(MF.getFunction());
-
-  if (!SIInsertWaitcnts(MLI, PDT, AA, MF).run())
+  if (!SIInsertWaitcnts(MLI, PDT, MF).run())
     return PreservedAnalyses::all();
 
   return getMachineFunctionPassPreservedAnalyses()
