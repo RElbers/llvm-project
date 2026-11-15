@@ -10,7 +10,8 @@ define void @gws_init_offset0() #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_mov_b32 m0, 0
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_init a0 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -27,7 +28,8 @@ define void @gws_init_offset63() #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_mov_b32 m0, 0
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_init a0 offset:63 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -44,7 +46,8 @@ define void @gws_init_sgpr_offset(i32 inreg %offset) #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_lshl_b32 m0, s16, 16
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_init a0 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -59,11 +62,13 @@ define amdgpu_kernel void @gws_init_agpr_offset() #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a1
 ; CHECK-NEXT:    ;;#ASMEND
-; CHECK-NEXT:    v_accvgpr_read_b32 v0, a1
-; CHECK-NEXT:    v_readfirstlane_b32 s0, v0
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
+; CHECK-NEXT:    v_accvgpr_read_b32 v0, a1
+; CHECK-NEXT:    v_readfirstlane_b32 s0, v0
 ; CHECK-NEXT:    s_lshl_b32 m0, s0, 16
 ; CHECK-NEXT:    s_nop 0
 ; CHECK-NEXT:    ds_gws_init a0 gds
@@ -82,11 +87,13 @@ define void @gws_init_agpr_offset_add1() #0 {
 ; SDAG-NEXT:    ;;#ASMSTART
 ; SDAG-NEXT:    ; def a1
 ; SDAG-NEXT:    ;;#ASMEND
-; SDAG-NEXT:    v_accvgpr_read_b32 v0, a1
-; SDAG-NEXT:    v_readfirstlane_b32 s4, v0
 ; SDAG-NEXT:    ;;#ASMSTART
 ; SDAG-NEXT:    ; def a0
 ; SDAG-NEXT:    ;;#ASMEND
+; SDAG-NEXT:    s_nop 15
+; SDAG-NEXT:    s_nop 2
+; SDAG-NEXT:    v_accvgpr_read_b32 v0, a1
+; SDAG-NEXT:    v_readfirstlane_b32 s4, v0
 ; SDAG-NEXT:    s_lshl_b32 m0, s4, 16
 ; SDAG-NEXT:    s_nop 0
 ; SDAG-NEXT:    ds_gws_init a0 offset:1 gds
@@ -99,12 +106,14 @@ define void @gws_init_agpr_offset_add1() #0 {
 ; GISEL-NEXT:    ;;#ASMSTART
 ; GISEL-NEXT:    ; def a1
 ; GISEL-NEXT:    ;;#ASMEND
-; GISEL-NEXT:    v_accvgpr_read_b32 v0, a1
-; GISEL-NEXT:    v_add_u32_e32 v0, 1, v0
-; GISEL-NEXT:    v_readfirstlane_b32 s4, v0
 ; GISEL-NEXT:    ;;#ASMSTART
 ; GISEL-NEXT:    ; def a0
 ; GISEL-NEXT:    ;;#ASMEND
+; GISEL-NEXT:    s_nop 15
+; GISEL-NEXT:    s_nop 2
+; GISEL-NEXT:    v_accvgpr_read_b32 v0, a1
+; GISEL-NEXT:    v_add_u32_e32 v0, 1, v0
+; GISEL-NEXT:    v_readfirstlane_b32 s4, v0
 ; GISEL-NEXT:    s_lshl_b32 m0, s4, 16
 ; GISEL-NEXT:    s_nop 0
 ; GISEL-NEXT:    ds_gws_init a0 gds
@@ -124,6 +133,8 @@ define amdgpu_kernel void @gws_init_vgpr_offset_add(i32 %val) #0 {
 ; SDAG-NEXT:    ;;#ASMSTART
 ; SDAG-NEXT:    ; def a0
 ; SDAG-NEXT:    ;;#ASMEND
+; SDAG-NEXT:    s_nop 15
+; SDAG-NEXT:    s_nop 2
 ; SDAG-NEXT:    v_accvgpr_read_b32 v0, a0
 ; SDAG-NEXT:    v_readfirstlane_b32 s1, v0
 ; SDAG-NEXT:    s_lshl_b32 m0, s1, 16
@@ -139,6 +150,8 @@ define amdgpu_kernel void @gws_init_vgpr_offset_add(i32 %val) #0 {
 ; GISEL-NEXT:    ;;#ASMSTART
 ; GISEL-NEXT:    ; def a0
 ; GISEL-NEXT:    ;;#ASMEND
+; GISEL-NEXT:    s_nop 15
+; GISEL-NEXT:    s_nop 2
 ; GISEL-NEXT:    v_accvgpr_read_b32 v0, a0
 ; GISEL-NEXT:    v_add_u32_e32 v0, 3, v0
 ; GISEL-NEXT:    v_readfirstlane_b32 s1, v0
@@ -163,7 +176,8 @@ define void @gws_barrier_offset0() #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_mov_b32 m0, 0
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_barrier a0 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -180,7 +194,8 @@ define void @gws_barrier_offset63() #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_mov_b32 m0, 0
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_barrier a0 offset:63 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -197,7 +212,8 @@ define void @gws_barrier_sgpr_offset(i32 inreg %offset) #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_lshl_b32 m0, s16, 16
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_barrier a0 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -240,7 +256,8 @@ define void @gws_sema_br_offset0() #0 {
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    s_mov_b32 m0, 0
-; CHECK-NEXT:    s_nop 0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ds_gws_sema_br a0 gds
 ; CHECK-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]

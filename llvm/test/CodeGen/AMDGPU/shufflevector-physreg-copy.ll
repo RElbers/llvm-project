@@ -575,6 +575,8 @@ define void @shufflevector_v2i32_10_physreg_even_agpr_pair_copy(ptr addrspace(1)
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a4, a5
 ; GFX90A-NEXT:    ;;#ASMEND
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 2
 ; GFX90A-NEXT:    v_accvgpr_read_b32 v2, a5
 ; GFX90A-NEXT:    v_accvgpr_read_b32 v3, a4
 ; GFX90A-NEXT:    global_store_dwordx2 v0, v[2:3], s[16:17]
@@ -588,7 +590,8 @@ define void @shufflevector_v2i32_10_physreg_even_agpr_pair_copy(ptr addrspace(1)
 ; GFX940-NEXT:    ;;#ASMSTART
 ; GFX940-NEXT:    ; def a4, a5
 ; GFX940-NEXT:    ;;#ASMEND
-; GFX940-NEXT:    s_nop 0
+; GFX940-NEXT:    s_nop 15
+; GFX940-NEXT:    s_nop 2
 ; GFX940-NEXT:    v_accvgpr_read_b32 v2, a5
 ; GFX940-NEXT:    v_accvgpr_read_b32 v3, a4
 ; GFX940-NEXT:    global_store_dwordx2 v0, v[2:3], s[0:1]
@@ -625,6 +628,8 @@ define void @shufflevector_v2i32_10_physreg_odd_agpr_pair_copy(ptr addrspace(1) 
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a5, a6
 ; GFX90A-NEXT:    ;;#ASMEND
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 2
 ; GFX90A-NEXT:    v_accvgpr_mov_b32 a4, a6
 ; GFX90A-NEXT:    global_store_dwordx2 v0, a[4:5], s[16:17]
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
@@ -637,7 +642,8 @@ define void @shufflevector_v2i32_10_physreg_odd_agpr_pair_copy(ptr addrspace(1) 
 ; GFX940-NEXT:    ;;#ASMSTART
 ; GFX940-NEXT:    ; def a5, a6
 ; GFX940-NEXT:    ;;#ASMEND
-; GFX940-NEXT:    s_nop 0
+; GFX940-NEXT:    s_nop 15
+; GFX940-NEXT:    s_nop 2
 ; GFX940-NEXT:    v_accvgpr_mov_b32 a4, a6
 ; GFX940-NEXT:    global_store_dwordx2 v0, a[4:5], s[0:1]
 ; GFX940-NEXT:    s_waitcnt vmcnt(0)

@@ -20,6 +20,8 @@ define void @ds_write2_b32_a_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:40
 ; GCN-NEXT:    ds_write_b32 v0, a1 offset:96
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -43,6 +45,8 @@ define void @ds_write2_b32_a_v(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:40
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:96
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -66,6 +70,8 @@ define void @ds_write2_b32_v_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:40
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:96
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -181,6 +187,8 @@ define void @ds_write2_b32_av_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a0
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:40
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:96
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -204,6 +212,8 @@ define void @ds_write2_b32_a_av(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:40
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:96
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -227,6 +237,8 @@ define void @ds_write2st64_b32_a_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:256
 ; GCN-NEXT:    ds_write_b32 v0, a1 offset:1024
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -250,6 +262,8 @@ define void @ds_write2st64_b32_a_v(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:256
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:1024
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -274,6 +288,8 @@ define void @ds_write2st64_b32_v_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a0
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:256
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:1024
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -386,6 +402,8 @@ define void @ds_write2st64_b32_av_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a0
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:256
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:1024
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -409,6 +427,8 @@ define void @ds_write2st64_b32_a_av(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v1
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b32 v0, a0 offset:256
 ; GCN-NEXT:    ds_write_b32 v0, v1 offset:1024
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -571,6 +591,8 @@ define void @ds_write2_b64_a_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:80
 ; GCN-NEXT:    ds_write_b64 v0, a[2:3] offset:192
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -594,6 +616,8 @@ define void @ds_write2_b64_a_v(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:80
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:192
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -617,6 +641,8 @@ define void @ds_write2_b64_v_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:80
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:192
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -732,6 +758,8 @@ define void @ds_write2_b64_av_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a[0:1]
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:80
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:192
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -755,6 +783,8 @@ define void @ds_write2_b64x_a_av(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:80
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:192
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -778,6 +808,8 @@ define void @ds_write2st64_b64_a_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def a[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:512
 ; GCN-NEXT:    ds_write_b64 v0, a[2:3] offset:2048
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -801,6 +833,8 @@ define void @ds_write2st64_b64_a_v(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:512
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:2048
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
@@ -825,6 +859,8 @@ define void @ds_write2st64_b64_v_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a[0:1]
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:512
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:2048
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -936,6 +972,8 @@ define void @ds_write2st64_b64_av_a(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ; def a[0:1]
 ; GCN-NEXT:    ;;#ASMEND
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:512
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 1
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:2048
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    s_setpc_b64 s[30:31]
@@ -958,6 +996,8 @@ define void @ds_write2st64_b64_a_av(ptr addrspace(3) %lds) #0 {
 ; GCN-NEXT:    ;;#ASMSTART
 ; GCN-NEXT:    ; def v[2:3]
 ; GCN-NEXT:    ;;#ASMEND
+; GCN-NEXT:    s_nop 15
+; GCN-NEXT:    s_nop 2
 ; GCN-NEXT:    ds_write_b64 v0, a[0:1] offset:512
 ; GCN-NEXT:    ds_write_b64 v0, v[2:3] offset:2048
 ; GCN-NEXT:    s_waitcnt lgkmcnt(0)

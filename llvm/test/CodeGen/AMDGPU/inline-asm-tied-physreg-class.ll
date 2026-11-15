@@ -22,6 +22,7 @@ define void @tied_agpr_imm() {
 ; GFX90A:       ; %bb.0:
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a1, 7
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a1
 ; GFX90A-NEXT:    ;;#ASMEND
@@ -51,6 +52,7 @@ define void @tied_agpr_vgpr(i32 %x) {
 ; GFX90A:       ; %bb.0:
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a1, v0
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a1
 ; GFX90A-NEXT:    ;;#ASMEND
@@ -82,6 +84,7 @@ define void @tied_agpr_sgpr(i32 inreg %x) {
 ; GFX90A:       ; %bb.0:
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a1, s16
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a1
 ; GFX90A-NEXT:    ;;#ASMEND
@@ -113,6 +116,7 @@ define void @tied_agpr64(i64 %x) {
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a2, v0
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a3, v1
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a[2:3]
 ; GFX90A-NEXT:    ;;#ASMEND
@@ -147,6 +151,7 @@ define void @tied_agpr64_sgpr(i64 inreg %x) {
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a2, s16
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a3, s17
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a[2:3]
 ; GFX90A-NEXT:    ;;#ASMEND

@@ -88,11 +88,11 @@ define amdgpu_kernel void @max_12regs_13a_used(i32 %cond, ptr addrspace(1) %arg,
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a9, 1
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a10, 2
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a11, 3
+; GFX90A-NEXT:    v_accvgpr_write_b32 a5, v7
+; GFX90A-NEXT:    v_accvgpr_write_b32 a6, v8
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a4, v6
-; GFX90A-NEXT:    v_accvgpr_write_b32 a5, v7
-; GFX90A-NEXT:    v_accvgpr_write_b32 a6, v8
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a7, v9
 ; GFX90A-NEXT:    v_mov_b32_e32 v1, v0
 ; GFX90A-NEXT:    v_mov_b32_e32 v2, v0
@@ -155,6 +155,10 @@ define amdgpu_kernel void @max_10_vgprs_used_9a() #1 {
 ; GFX90A:       ; %bb.0:
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ;;#ASMEND
+; GFX90A-NEXT:    ;;#ASMSTART
+; GFX90A-NEXT:    ;;#ASMEND
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 2
 ; GFX90A-NEXT:    v_accvgpr_read_b32 v0, a0
 ; GFX90A-NEXT:    v_accvgpr_read_b32 v1, a1
 ; GFX90A-NEXT:    v_accvgpr_read_b32 v2, a2
@@ -163,18 +167,20 @@ define amdgpu_kernel void @max_10_vgprs_used_9a() #1 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ;;#ASMEND
-; GFX90A-NEXT:    ;;#ASMSTART
-; GFX90A-NEXT:    ;;#ASMEND
-; GFX90A-NEXT:    v_accvgpr_read_b32 v5, a3
-; GFX90A-NEXT:    v_accvgpr_read_b32 v4, a2
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a5, v3
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a4, v2
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
+; GFX90A-NEXT:    v_accvgpr_read_b32 v5, a3
+; GFX90A-NEXT:    v_accvgpr_read_b32 v4, a2
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a3, v1
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a2, v0
+; GFX90A-NEXT:    v_accvgpr_write_b32 a1, v5
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    v_accvgpr_write_b32 a0, v4
-; GFX90A-NEXT:    v_accvgpr_write_b32 a1, v5
+; GFX90A-NEXT:    s_nop 1
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_endpgm
@@ -433,6 +439,8 @@ define amdgpu_kernel void @max_6regs_used_8a(ptr addrspace(1) %arg) #4 {
 ; GFX90A-NEXT:    ;;#ASMSTART
 ; GFX90A-NEXT:    ; def a[0:3]
 ; GFX90A-NEXT:    ;;#ASMEND
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 2
 ; GFX90A-NEXT:    buffer_store_dword a0, off, s[8:11], 0 ; 4-byte Folded Spill
 ; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    buffer_store_dword a1, off, s[8:11], 0 offset:4 ; 4-byte Folded Spill

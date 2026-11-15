@@ -141,6 +141,7 @@ define amdgpu_kernel void @test_rewrite_mfma_copy_to_agpr_phi_loop(ptr addrspace
 ; CHECK-NEXT:    v_accvgpr_write_b32 a29, v61
 ; CHECK-NEXT:    v_accvgpr_write_b32 a30, v62
 ; CHECK-NEXT:    v_accvgpr_write_b32 a31, v63
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:31]
 ; CHECK-NEXT:    ;;#ASMEND

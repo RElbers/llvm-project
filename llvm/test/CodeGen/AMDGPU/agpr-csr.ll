@@ -133,6 +133,8 @@ define amdgpu_kernel void @test_call_empty() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[28:31], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[24:27], off
@@ -268,6 +270,8 @@ define amdgpu_kernel void @test_call_areg4() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[32:35], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[28:31], off
@@ -403,6 +407,8 @@ define amdgpu_kernel void @test_call_areg32() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[60:63], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[56:59], off
@@ -538,6 +544,8 @@ define amdgpu_kernel void @test_call_areg64() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[28:31], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[24:27], off
@@ -673,6 +681,8 @@ define amdgpu_kernel void @test_call_areg31_63() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[60:63], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[56:59], off
@@ -808,6 +818,8 @@ define amdgpu_kernel void @test_call_unknown() #0 {
 ; GFX90A-NEXT:    ;;#ASMEND
 ; GFX90A-NEXT:    s_waitcnt lgkmcnt(0)
 ; GFX90A-NEXT:    s_swappc_b64 s[30:31], s[16:17]
+; GFX90A-NEXT:    s_nop 15
+; GFX90A-NEXT:    s_nop 0
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[60:63], off
 ; GFX90A-NEXT:    s_waitcnt vmcnt(0)
 ; GFX90A-NEXT:    global_store_dwordx4 v[0:1], a[56:59], off

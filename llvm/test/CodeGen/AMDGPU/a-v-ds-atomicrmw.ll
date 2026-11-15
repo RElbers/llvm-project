@@ -13,10 +13,13 @@ define void @ds_atomic_xchg_i32_ret_a_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -36,6 +39,8 @@ define void @ds_atomic_xchg_i32_ret_a_v(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -61,6 +66,7 @@ define void @ds_atomic_xchg_i32_ret_v_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -125,6 +131,7 @@ define void @ds_atomic_xchg_i32_ret_av_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -144,6 +151,8 @@ define void @ds_atomic_xchg_i32_ret_a_av(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -227,6 +236,8 @@ define void @ds_atomic_xchg_i32_ret_av_av_no_agprs(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    v_accvgpr_write_b32 a18, v31 ; Reload Reuse
 ; CHECK-NEXT:    v_accvgpr_read_b32 v0, a0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 0
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a1
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -318,6 +329,8 @@ define void @ds_atomic_xchg_i32_noret_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -356,12 +369,15 @@ define void @ds_atomic_xchg_i64_ret_a_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b64 v[0:1], v0, v[2:3]
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -381,6 +397,8 @@ define void @ds_atomic_xchg_i64_ret_a_v(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b64 v[0:1], v0, v[2:3]
@@ -408,6 +426,7 @@ define void @ds_atomic_xchg_i64_ret_v_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -473,6 +492,7 @@ define void @ds_atomic_xchg_i64_ret_av_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -492,6 +512,8 @@ define void @ds_atomic_xchg_i64_ret_a_av(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b64 v[0:1], v0, v[2:3]
@@ -535,6 +557,8 @@ define void @ds_atomic_xchg_i64_noret_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_wrxchg_rtn_b64 v[0:1], v0, v[2:3]
@@ -574,10 +598,13 @@ define void @ds_atomic_xor_i32_ret_a_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -597,6 +624,8 @@ define void @ds_atomic_xor_i32_ret_a_v(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -622,6 +651,7 @@ define void @ds_atomic_xor_i32_ret_v_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -686,6 +716,7 @@ define void @ds_atomic_xor_i32_ret_av_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a0
 ; CHECK-NEXT:    ;;#ASMEND
@@ -705,6 +736,8 @@ define void @ds_atomic_xor_i32_ret_a_av(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a0
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -788,6 +821,8 @@ define void @ds_atomic_xor_i32_ret_av_av_no_agprs(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMEND
 ; CHECK-NEXT:    v_accvgpr_write_b32 a18, v31 ; Reload Reuse
 ; CHECK-NEXT:    v_accvgpr_read_b32 v0, a0
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 0
 ; CHECK-NEXT:    v_accvgpr_read_b32 v1, a1
 ; CHECK-NEXT:    ds_xor_rtn_b32 v0, v0, v1
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
@@ -879,6 +914,8 @@ define void @ds_atomic_xor_i32_noret_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a0
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    ds_xor_b32 v0, a0
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
@@ -916,12 +953,15 @@ define void @ds_atomic_xor_i64_ret_a_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_xor_rtn_b64 v[0:1], v0, v[2:3]
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -941,6 +981,8 @@ define void @ds_atomic_xor_i64_ret_a_v(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_xor_rtn_b64 v[0:1], v0, v[2:3]
@@ -968,6 +1010,7 @@ define void @ds_atomic_xor_i64_ret_v_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -1033,6 +1076,7 @@ define void @ds_atomic_xor_i64_ret_av_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    v_accvgpr_write_b32 a0, v0
 ; CHECK-NEXT:    v_accvgpr_write_b32 a1, v1
+; CHECK-NEXT:    s_nop 1
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; use a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
@@ -1052,6 +1096,8 @@ define void @ds_atomic_xor_i64_ret_a_av(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    v_accvgpr_read_b32 v3, a1
 ; CHECK-NEXT:    v_accvgpr_read_b32 v2, a0
 ; CHECK-NEXT:    ds_xor_rtn_b64 v[0:1], v0, v[2:3]
@@ -1095,6 +1141,8 @@ define void @ds_atomic_xor_i64_noret_a(ptr addrspace(3) %ptr) #0 {
 ; CHECK-NEXT:    ;;#ASMSTART
 ; CHECK-NEXT:    ; def a[0:1]
 ; CHECK-NEXT:    ;;#ASMEND
+; CHECK-NEXT:    s_nop 15
+; CHECK-NEXT:    s_nop 2
 ; CHECK-NEXT:    ds_xor_b64 v0, a[0:1]
 ; CHECK-NEXT:    s_waitcnt lgkmcnt(0)
 ; CHECK-NEXT:    s_setpc_b64 s[30:31]
