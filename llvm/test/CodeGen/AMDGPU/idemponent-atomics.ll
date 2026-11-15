@@ -422,9 +422,9 @@ define i16 @global_agent_monotonic_idempotent_sub_i16(ptr addrspace(1) %in) {
 ; GFX942-NEXT:    v_not_b32_e32 v5, v2
 ; GFX942-NEXT:    s_mov_b64 s[0:1], 0
 ; GFX942-NEXT:    v_or_b32_e32 v5, v5, v2
+; GFX942-NEXT:    s_waitcnt vmcnt(0)
 ; GFX942-NEXT:  .LBB18_1: ; %atomicrmw.start
 ; GFX942-NEXT:    ; =>This Inner Loop Header: Depth=1
-; GFX942-NEXT:    s_waitcnt vmcnt(0)
 ; GFX942-NEXT:    v_and_b32_e32 v2, v3, v5
 ; GFX942-NEXT:    global_atomic_cmpswap v2, v[0:1], v[2:3], off sc0
 ; GFX942-NEXT:    s_waitcnt vmcnt(0)
