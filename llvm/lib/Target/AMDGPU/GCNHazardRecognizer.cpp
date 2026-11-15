@@ -1657,13 +1657,33 @@ int GCNHazardRecognizer::checkInlineAsmHazards(MachineInstr *IA) const {
   // hazards (good luck), but is a collection of what has been
   // problematic thus far.
 
+  const MachineRegisterInfo &MRI = MF.getRegInfo();
+  int WaitStatesNeeded = 0;
+
+  // Inline asm that reads an AGPR may be an MFMA reading its accumulator or
+  // operands; give it the wait states a real MFMA needs after a VALU write.
+  if (ST.hasGFX90AInsts()) {
+    const int LegacyVALUWritesVGPRMFMAReadWaitStates = 2;
+    auto IsLegacyVALUFn = [](const MachineInstr &MI) {
+      return SIInstrInfo::isVALU(MI, /*AllowLDSDMA=*/true) &&
+             !SIInstrInfo::isMFMA(MI);
+    };
+    for (const MachineOperand &Op :
+         llvm::drop_begin(IA->operands(), InlineAsm::MIOp_FirstOperand)) {
+      if (!Op.isReg() || !Op.isUse() || !TRI.isAGPR(MRI, Op.getReg()))
+        continue;
+      WaitStatesNeeded = std::max(
+          WaitStatesNeeded,
+          LegacyVALUWritesVGPRMFMAReadWaitStates -
+              getWaitStatesSinceDef(Op.getReg(), IsLegacyVALUFn,
+                                    LegacyVALUWritesVGPRMFMAReadWaitStates));
+    }
+  }
+
   // see checkVALUHazards()
   if (!ST.has12DWordStoreHazard() && !ST.hasDstSelForwardingHazard() &&
       !ST.hasCvtScaleForwardingHazard())
-    return 0;
-
-  const MachineRegisterInfo &MRI = MF.getRegInfo();
-  int WaitStatesNeeded = 0;
+    return WaitStatesNeeded;
 
   for (const MachineOperand &Op :
        llvm::drop_begin(IA->operands(), InlineAsm::MIOp_FirstOperand)) {
@@ -3649,6 +3669,18 @@ int GCNHazardRecognizer::checkMAIVALUHazards(MachineInstr *MI) const {
 
           WaitStatesNeeded = std::max(WaitStatesNeeded, WaitStatesNeededForUse);
         }
+      }
+
+      // Inline asm that defines an AGPR may be an MFMA, which this check can't
+      // otherwise see. Assume the longest MFMA result latency.
+      if (TRI.isAGPR(MRI, Reg)) {
+        auto IsInlineAsmWriteFn = [&Reg, this](const MachineInstr &MI) {
+          return MI.isInlineAsm() && MI.modifiesRegister(Reg, &TRI);
+        };
+        WaitStatesNeeded = std::max(
+            WaitStatesNeeded,
+            MaxWaitStates -
+                getWaitStatesSinceDef(Reg, IsInlineAsmWriteFn, MaxWaitStates));
       }
 
       MFMA = nullptr;
