@@ -137,6 +137,17 @@ static bool isNonWaitcntMetaInst(const MachineInstr &MI) {
   }
 }
 
+// The alias info of \p MI's LDS store if it has an alias scope, which
+// identifies the LDS variable written (the module LDS lowering gives each
+// variable its own scope), or empty AAMDNodes otherwise.
+static AAMDNodes getLDSStoreScopeInfo(const MachineInstr &MI) {
+  for (const MachineMemOperand *MemOp : MI.memoperands()) {
+    if (MemOp->isStore() && MemOp->getAddrSpace() == AMDGPUAS::LOCAL_ADDRESS)
+      return MemOp->getAAInfo().Scope ? MemOp->getAAInfo() : AAMDNodes();
+  }
+  return AAMDNodes();
+}
+
 static bool updateVMCntOnly(const MachineInstr &Inst) {
   return (SIInstrInfo::isVMEM(Inst) && !SIInstrInfo::isFLAT(Inst)) ||
          SIInstrInfo::isFLATGlobal(Inst) || SIInstrInfo::isFLATScratch(Inst);
@@ -1040,36 +1051,27 @@ void WaitcntBrackets::updateByEvent(HWEvents E, MachineInstr &Inst) {
       // there is a MachineInstr in LDSDMAStores used to track this LDSDMA
       // store. The "Slot" is the index into LDSDMAStores + 1.
       unsigned Slot = 0;
-      for (const auto *MemOp : Inst.memoperands()) {
-        if (!MemOp->isStore() ||
-            MemOp->getAddrSpace() != AMDGPUAS::LOCAL_ADDRESS)
-          continue;
-        // Comparing just AA info does not guarantee memoperands are equal
-        // in general, but this is so for LDS DMA in practice.
-        auto AAI = MemOp->getAAInfo();
-        // Alias scope information gives a way to definitely identify an
-        // original memory object and practically produced in the module LDS
-        // lowering pass. If there is no scope available we will not be able
-        // to disambiguate LDS aliasing as after the module lowering all LDS
-        // is squashed into a single big object.
-        if (!AAI || !AAI.Scope)
-          break;
+      // Alias scope information gives a way to definitely identify an
+      // original memory object and practically produced in the module LDS
+      // lowering pass. If there is no scope available we will not be able
+      // to disambiguate LDS aliasing as after the module lowering all LDS
+      // is squashed into a single big object. An LDS DMA without a scope may
+      // write any LDS variable: all such DMAs share a slot keyed by empty
+      // alias info, so that an access with scope information still waits for
+      // them.
+      AAMDNodes AAI = getLDSStoreScopeInfo(Inst);
+      if (AAI || Context->isNonAsyncLdsDmaWrite(Inst)) {
         for (unsigned I = 0, E = LDSDMAStores.size(); I != E && !Slot; ++I) {
-          for (const auto *MemOp : LDSDMAStores[I]->memoperands()) {
-            if (MemOp->isStore() && AAI == MemOp->getAAInfo()) {
-              Slot = I + 1;
-              break;
-            }
-          }
+          if (getLDSStoreScopeInfo(*LDSDMAStores[I]) == AAI)
+            Slot = I + 1;
         }
-        if (Slot)
-          break;
         // The slot may not be valid because it can be >= NUM_LDSDMA which
         // means the scoreboard cannot track it. We still want to preserve the
         // MI in order to check alias information, though.
-        LDSDMAStores.push_back(&Inst);
-        Slot = LDSDMAStores.size();
-        break;
+        if (!Slot) {
+          LDSDMAStores.push_back(&Inst);
+          Slot = LDSDMAStores.size();
+        }
       }
       setVMemScore(LDSDMA_BEGIN, T, CurrScore);
       if (Slot && Slot < NUM_LDSDMA)
@@ -2439,7 +2441,9 @@ bool SIInsertWaitcnts::generateWaitcntInstBefore(
         if (Ptr && Memop->getAAInfo()) {
           const auto &LDSDMAStores = ScoreBrackets.getLDSDMAStores();
           for (unsigned I = 0, E = LDSDMAStores.size(); I != E; ++I) {
-            if (MI.mayAlias(AA, *LDSDMAStores[I], true)) {
+            // An LDS DMA without a scope may write any LDS variable.
+            if (!getLDSStoreScopeInfo(*LDSDMAStores[I]) ||
+                MI.mayAlias(AA, *LDSDMAStores[I], true)) {
               if ((I + 1) >= NUM_LDSDMA) {
                 // We didn't have enough slot to track this LDS DMA store, it
                 // has been tracked using the common RegNo (FIRST_LDS_VGPR).
