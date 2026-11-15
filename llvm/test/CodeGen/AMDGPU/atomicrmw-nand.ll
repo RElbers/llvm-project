@@ -32,9 +32,9 @@ define i32 @atomic_nand_i32_global(ptr addrspace(1) %ptr) nounwind {
 ; GCN-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GCN-NEXT:    global_load_dword v2, v[0:1], off
 ; GCN-NEXT:    s_mov_b64 s[4:5], 0
+; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:  .LBB1_1: ; %atomicrmw.start
 ; GCN-NEXT:    ; =>This Inner Loop Header: Depth=1
-; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:    v_mov_b32_e32 v3, v2
 ; GCN-NEXT:    v_bfi_b32 v2, v3, -5, -1
 ; GCN-NEXT:    global_atomic_cmpswap v2, v[0:1], v[2:3], off glc
@@ -58,9 +58,10 @@ define i32 @atomic_nand_i32_flat(ptr %ptr) nounwind {
 ; GCN-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
 ; GCN-NEXT:    flat_load_dword v2, v[0:1]
 ; GCN-NEXT:    s_mov_b64 s[4:5], 0
+; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:  .LBB2_1: ; %atomicrmw.start
 ; GCN-NEXT:    ; =>This Inner Loop Header: Depth=1
-; GCN-NEXT:    s_waitcnt vmcnt(0) lgkmcnt(0)
+; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    v_mov_b32_e32 v3, v2
 ; GCN-NEXT:    v_bfi_b32 v2, v3, -5, -1
 ; GCN-NEXT:    flat_atomic_cmpswap v2, v[0:1], v[2:3] glc

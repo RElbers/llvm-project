@@ -31,9 +31,10 @@ define amdgpu_kernel void @atomic_max_i32(ptr addrspace(1) %out, ptr addrspace(1
 ; GCN-NEXT:    buffer_load_dword v5, v[1:2], s[8:11], 0 addr64 offset:400
 ; GCN-NEXT:    s_load_dword s4, s[4:5], 0xf
 ; GCN-NEXT:    s_mov_b64 s[2:3], 0
+; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:  .LBB0_2: ; %atomicrmw.start
 ; GCN-NEXT:    ; =>This Inner Loop Header: Depth=1
-; GCN-NEXT:    s_waitcnt vmcnt(0) expcnt(0) lgkmcnt(0)
+; GCN-NEXT:    s_waitcnt expcnt(0) lgkmcnt(0)
 ; GCN-NEXT:    v_max_i32_e32 v4, s4, v5
 ; GCN-NEXT:    v_mov_b32_e32 v3, v4
 ; GCN-NEXT:    v_mov_b32_e32 v4, v5
@@ -89,9 +90,10 @@ define amdgpu_kernel void @atomic_max_i32_noret(ptr addrspace(1) %out, ptr addrs
 ; GCN-NEXT:    buffer_load_dword v4, v[1:2], s[0:3], 0 addr64 offset:400
 ; GCN-NEXT:    s_load_dword s6, s[4:5], 0xf
 ; GCN-NEXT:    s_mov_b64 s[4:5], 0
+; GCN-NEXT:    s_waitcnt vmcnt(0)
 ; GCN-NEXT:  .LBB1_2: ; %atomicrmw.start
 ; GCN-NEXT:    ; =>This Inner Loop Header: Depth=1
-; GCN-NEXT:    s_waitcnt vmcnt(0) lgkmcnt(0)
+; GCN-NEXT:    s_waitcnt lgkmcnt(0)
 ; GCN-NEXT:    v_max_i32_e32 v3, s6, v4
 ; GCN-NEXT:    s_waitcnt expcnt(0)
 ; GCN-NEXT:    v_mov_b32_e32 v6, v4

@@ -380,20 +380,26 @@ body:             |
 ---
 
 # Same as loop2 but the value loaded inside the loop is also used in the loop.
-# We do not expect the waitcnt to be hoisted out of the loop.
+# The header reads the value loaded outside the loop before its own load, so on
+# GFX9 and GFX10 the wait for it is hoisted into the preheader. The loop keeps
+# the wait for its own load. GFX12 writes vgprs out of order and is unchanged.
 
 # GFX9-LABEL: waitcnt_vm_loop2_use_in_loop
 # GFX9-LABEL: bb.0:
-# GFX9-NOT: S_WAITCNT .Vmcnt_0{{$}}
-# GFX9-LABEL: bb.1:
 # GFX9: S_WAITCNT .Vmcnt_0{{$}}
+# GFX9-LABEL: bb.1:
+# GFX9-NOT: S_WAITCNT .Vmcnt_0{{$}}
+# GFX9: BUFFER_LOAD_FORMAT_X_IDXEN
+# GFX9-NEXT: S_WAITCNT .Vmcnt_0{{$}}
 # GFX9-LABEL: bb.2:
 
 # GFX10-LABEL: waitcnt_vm_loop2_use_in_loop
 # GFX10-LABEL: bb.0:
-# GFX10-NOT: S_WAITCNT .Vmcnt_0{{$}}
-# GFX10-LABEL: bb.1:
 # GFX10: S_WAITCNT .Vmcnt_0{{$}}
+# GFX10-LABEL: bb.1:
+# GFX10-NOT: S_WAITCNT .Vmcnt_0{{$}}
+# GFX10: BUFFER_LOAD_FORMAT_X_IDXEN
+# GFX10-NEXT: S_WAITCNT .Vmcnt_0{{$}}
 # GFX10-LABEL: bb.2:
 
 # GFX12-LABEL: waitcnt_vm_loop2_use_in_loop
@@ -540,20 +546,25 @@ body:             |
 ...
 ---
 
-# Similar test case but for register intervals.
+# Similar test case but for register intervals. As in loop2_use_in_loop, the
+# wait for the value loaded outside the loop is hoisted on GFX9 and GFX10.
 
 # GFX9-LABEL: waitcnt_vm_loop2_reginterval2
 # GFX9-LABEL: bb.0:
-# GFX9-NOT: S_WAITCNT .Vmcnt_0{{$}}
-# GFX9-LABEL: bb.1:
 # GFX9: S_WAITCNT .Vmcnt_0{{$}}
+# GFX9-LABEL: bb.1:
+# GFX9-NOT: S_WAITCNT .Vmcnt_0{{$}}
+# GFX9: IMAGE_SAMPLE_V4_V2
+# GFX9-NEXT: S_WAITCNT .Vmcnt_0{{$}}
 # GFX9-LABEL: bb.2:
 
 # GFX10-LABEL: waitcnt_vm_loop2_reginterval2
 # GFX10-LABEL: bb.0:
-# GFX10-NOT: S_WAITCNT .Vmcnt_0{{$}}
-# GFX10-LABEL: bb.1:
 # GFX10: S_WAITCNT .Vmcnt_0{{$}}
+# GFX10-LABEL: bb.1:
+# GFX10-NOT: S_WAITCNT .Vmcnt_0{{$}}
+# GFX10: IMAGE_SAMPLE_V4_V2
+# GFX10-NEXT: S_WAITCNT .Vmcnt_0{{$}}
 # GFX10-LABEL: bb.2:
 
 # GFX12-LABEL: waitcnt_vm_loop2_reginterval2
